@@ -51,11 +51,28 @@
         }
 
         .card-header {
-            background-color: #1976d2;
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
-            padding: 15px 20px;
-            font-weight: 600;
+            background: #fff;
+            color: var(--primary-color);
+            border-radius: 0;
+            border-left: 4px solid var(--primary-color);
+            border-bottom: 1px solid #f0f0f0;
+            font-weight: 700;
+            font-size: 1.08rem;
+            padding: 16px 22px 14px 22px;
+            box-shadow: 0 2px 6px rgba(60, 112, 66, 0.04);
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            min-height: 54px;
+        }
+
+        .card-header h5,
+        .card-header .mb-0 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.08rem;
+            letter-spacing: 0.2px;
         }
 
         .btn-primary {
