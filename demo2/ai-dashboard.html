@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Survey Analytics Dashboard</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #3c7042;
+            --secondary-color: #4361ee;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --info-color: #7209b7;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+            --tab-active: #3c7042;
+            --tab-inactive: #6c757d;
+            --tab-hover: #e9ecef;
+            --sidebar-width: 240px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eaf5ee 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: 18px;
+            padding: 32px 30px 32px 30px;
+            margin-bottom: 32px;
+            box-shadow: var(--card-shadow);
+            border-left: 7px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dashboard-header .sadeed-logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            margin-right: 18px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .dashboard-header .text-muted {
+            color: #6c757d !important;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 6px 24px rgba(60, 112, 66, 0.08);
+        }
+
+        .metric-value {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .metric-label {
+            font-size: 0.95rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tabs Styling */
+        .analysis-tabs {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: linear-gradient(90deg, #3c7042 0%, #4361ee 100%);
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            overflow-x: auto;
+        }
+
+        .tab-item {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .tab-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.92);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            background: transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-link:hover {
+            background: rgba(60, 112, 66, 0.10);
+            color: #fff;
+        }
+
+        .tab-link.active {
+            background: rgba(60, 112, 66, 0.18);
+            color: #fff;
+            border-bottom: 3px solid #fff;
+        }
+
+        .tab-link i {
+            font-size: 1.2rem;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 32px 32px 16px 32px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tab Content Cards */
+        .tab-card {
+            background: white;
+            border-radius: 14px;
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 15px rgba(60, 112, 66, 0.06);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .tab-card+.tab-card {
+            margin-top: 32px;
+        }
+
+        .insight-card {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 24px;
+            margin-bottom: 32px;
+            background: #f7faf7;
+        }
+
+        .action-card {
+            border-left: 4px solid var(--success-color);
+            padding-left: 24px;
+        }
+
+        .root-cause-card {
+            border-left: 4px solid var(--warning-color);
+            padding-left: 24px;
+            margin-bottom: 32px;
+            padding-right: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .card-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-warning {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .badge-danger {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .badge-info {
+            background: #e0f2f1;
+            color: #00796b;
+        }
+
+        .confidence-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .confidence-badge {
+            background: linear-gradient(45deg, #3c7042, #4cc9f0);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .confidence-bar {
+            flex: 1;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3c7042, #4cc9f0);
+            border-radius: 4px;
+        }
+
+        .evidence-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .evidence-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .action-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .action-item.high {
+            border-left-color: #f44336;
+        }
+
+        .action-item.medium {
+            border-left-color: #ff9800;
+        }
+
+        .action-item.low {
+            border-left-color: #4caf50;
+        }
+
+        .action-checkbox {
+            margin-right: 15px;
+        }
+
+        .action-details {
+            flex: 1;
+        }
+
+        .action-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .root-cause-content {
+            padding: 20px;
+            background: linear-gradient(135deg, #fff8e1 0%, #f9fbe7 100%);
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .recommendation-list {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .recommendation-item i {
+            color: #3c7042;
+            margin-top: 2px;
+        }
+
+        /* Sidebar and layout styles from survey-runner */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, #3c7042 0%, #4361ee 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 32px 0 0 0;
+            box-shadow: 2px 0 12px rgba(60, 112, 66, 0.07);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .sidebar .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-left: 32px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .nav {
+            width: 100%;
+            flex: 1;
+        }
+
+        .sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.08rem;
+            border-left: 4px solid transparent;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #fff;
+            color: #fff;
+        }
+
+        .sidebar .logout-btn {
+            margin: 32px 0 0 32px;
+            background: #fff;
+            color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sidebar .logout-btn:hover {
+            background: #eaf5ee;
+            color: #2e5c35;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100vw - var(--sidebar-width));
+            min-height: 100vh;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                margin-left: 0;
+                width: 100vw;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        .evidence-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+        }
+
+        .urgency-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .urgency-high {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .urgency-medium {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .urgency-low {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* ...existing code... */
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-leaf"></i> Sadeed
+        </div>
+        <nav class="nav flex-column w-100">
+            <a class="nav-link" href="/demo2/index.html"><i class="fas fa-pen-nib"></i> Survey Builder</a>
+            <a class="nav-link" href="/demo2/survey-runner.html"><i class="fas fa-clipboard-list"></i> Take Survey</a>
+            <a class="nav-link active" href="/demo2/ai-dashboard.html"><i class="fas fa-chart-bar"></i> Analytics</a>
+        </nav>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    <div class="main-content">
+        <div class="dashboard-container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <span class="sadeed-logo">Sadeed</span>
+                <div style="flex:1">
+                    <h1 class="mb-2 d-inline-block align-middle">Survey Analytics</h1>
+                    <p class="text-muted mb-0">AI-powered insights and actionable recommendations from your survey data
+                    </p>
+                </div>
+                <div class="text-end" style="min-width:220px;">
+                    <span class="urgency-badge urgency-medium" id="urgencyBadge">Medium Urgency</span>
+                    <div class="mt-2 text-muted">
+                        <small>Generated: <span id="generatedTime">Just now</span></small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="summary-card" id="summaryCard">
+                        <h4><i class="fas fa-lightbulb me-2"></i> AI Summary</h4>
+                        <p class="mb-0" id="summaryText">Loading summary...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Row -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card text-center">
+                        <div class="metric-value" id="insightCount">0</div>
+                        <div class="metric-label">AI Insights</div>
+                        <small class="text-muted">Key findings from analysis</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card text-center">
+                        <div class="metric-value" id="rootCauseCount">0</div>
+                        <div class="metric-label">Root Causes</div>
+                        <small class="text-muted">Underlying issues identified</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card text-center">
+                        <div class="metric-value" id="actionableCount">0</div>
+                        <div class="metric-label">Actionable Insights</div>
+                        <small class="text-muted">Ready to implement</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card text-center">
+                        <div class="metric-value" id="actionItemCount">0</div>
+                        <div class="metric-label">Action Items</div>
+                        <small class="text-muted">Tasks to implement</small>
+                    </div>
+                </div>  
+            </div>
+
+            <!-- Main Content with Tabs -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="analysis-tabs mb-4">
+                        <ul class="tab-nav" id="analysisTabNav">
+                            <li class="tab-item">
+                                <button class="tab-link active" data-tab="insightsTab">
+                                    <i class="fas fa-chart-line"></i> AI Insights
+                                </button>
+                            </li>
+                            <li class="tab-item">
+                                <button class="tab-link" data-tab="rootCauseTab">
+                                    <i class="fas fa-search"></i> Root Cause Analysis
+                                </button>
+                            </li>
+                            <li class="tab-item">
+                                <button class="tab-link" data-tab="actionPlanTab">
+                                    <i class="fas fa-tasks"></i> Action Plan
+                                </button>
+                            </li>
+
+                        </ul>
+                        <div class="tab-content active" id="insightsTab">
+                            <div id="insightsContainer"></div>
+                        </div>
+                        <div class="tab-content" id="rootCauseTab">
+                            <div id="rootCausesContainer"></div>
+                        </div>
+                        <div class="tab-content" id="actionPlanTab">
+                            <div class="card tab-card action-card">
+                                <div class="card-header">
+                                    <span class="card-title" id="planName">Loading plan...</span>
+                                    <span>
+                                        <span class="badge badge-primary" id="planPriority">Priority</span>
+                                        <span class="badge badge-info ms-2" id="planStatus">Status</span>
+                                    </span>
+                                </div>
+                                <div class="mb-2 text-muted" id="planDescription"></div>
+                                <div class="mb-2">
+                                    <small>Deadline: <span id="planDeadline">Loading...</span></small>
+                                </div>
+                                <div id="actionItemsContainer"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <!-- Sentiment & Engagement -->
+                    <div class="chart-container mb-4">
+                        <h5><i class="fas fa-chart-pie me-2"></i> AI Analysis Metrics</h5>
+                        <canvas id="aiMetricsChart" height="200"></canvas>
+                    </div>
+
+                    <!-- Recommendations Summary -->
+                    <div class="metric-card">
+                        <h5><i class="fas fa-bullseye me-2"></i> Recommendations Timeline</h5>
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Immediate (2 weeks)</span>
+                                <span class="fw-bold" id="immediateCount">0</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 10px;">
+                                <div class="progress-bar bg-danger" id="immediateProgress" style="width: 0%"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Medium-term (1-2 months)</span>
+                                <span class="fw-bold" id="mediumTermCount">0</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 10px;">
+                                <div class="progress-bar bg-warning" id="mediumTermProgress" style="width: 0%"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Long-term (3+ months)</span>
+                                <span class="fw-bold" id="longTermCount">0</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-success" id="longTermProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Scores -->
+                    <div class="metric-card mt-4">
+                        <h5><i class="fas fa-shield-alt me-2"></i> AI Confidence Levels</h5>
+                        <div id="confidenceScores">
+                            <!-- Confidence scores will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button style="display: none;" class="floating-action-btn" id="exportBtn" title="Export Analysis">
+            <i class="fas fa-download"></i>
+        </button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Your data from the API
+        const analysisData = []; // Will be populated from API
+
+        // DOM Elements
+        const insightsContainer = document.getElementById('insightsContainer');
+        const actionItemsContainer = document.getElementById('actionItemsContainer');
+        const rootCausesContainer = document.getElementById('rootCausesContainer');
+        const confidenceScores = document.getElementById('confidenceScores');
+        const summaryText = document.getElementById('summaryText');
+        const urgencyBadge = document.getElementById('urgencyBadge');
+
+        // Initialize Chart
+        let metricsChart;
+
+        // Fetch data from your API
+        async function loadAnalysisData() {
+            try {
+                const url = new URL(window.location.href);
+                const pathname = url.pathname;
+                const pathParts = pathname.split('/');
+                const surveyId = pathParts[3];
+                if (!surveyId) {
+                    throw new Error('Survey ID not found in URL');
+                }
+
+                const response = await fetch(`/demo2/api/surveys/${surveyId}/ai-analysis`);
+                const apiData = await response.json();
+
+                // Transform API data to expected dashboard structure
+                const dashboardData = {};
+
+                // Insights
+                dashboardData.insights = (apiData.insights || []).map(insight => ({
+                    ...insight,
+                    type: insight.insight_type,
+                    text: insight.insight_text,
+                    confidence: insight.confidence_score,
+                    evidence: (() => {
+                        try {
+                            const parsed = JSON.parse(insight.evidence);
+                            return Array.isArray(parsed) ? parsed : [];
+                        } catch {
+                            return [];
+                        }
+                    })(),
+                    actionable: insight.is_actionable === 1 || insight.is_actionable === true
+                }));
+
+                // Action Plan (use first plan if exists)
+                if (Array.isArray(apiData.action_plans) && apiData.action_plans.length > 0) {
+                    const plan = apiData.action_plans[0];
+                    dashboardData.action_plans = [{
+                        ...plan,
+                        plan_name: plan.plan_name,
+                        description: plan.description,
+                        priority: plan.priority,
+                        status: plan.status,
+                        deadline: plan.deadline,
+                        action_items: (plan.action_items || []).map(item => ({
+                            ...item,
+                            text: item.item_text,
+                            priority: plan.priority,
+                            category: item.category,
+                            owner: item.owner,
+                            status: item.status,
+                            due_date: item.due_date,
+                            estimated_effort: item.estimated_effort || ''
+                        }))
+                    }];
+                } else {
+                    dashboardData.action_plans = [];
+                }
+
+                // Root Causes
+                dashboardData.root_causes = (apiData.root_causes || []).map(rc => ({
+                    ...rc,
+                    evidence: (() => {
+                        try {
+                            const parsed = JSON.parse(rc.evidence);
+                            return Array.isArray(parsed) ? parsed : [];
+                        } catch {
+                            return [];
+                        }
+                    })(),
+                    recommendations: (() => {
+                        try {
+                            const parsed = JSON.parse(rc.recommendations);
+                            return Array.isArray(parsed) ? parsed : [];
+                        } catch {
+                            return [];
+                        }
+                    })()
+                }));
+
+                // Dashboard Metrics (merge all metrics by name)
+                dashboardData.dashboard_metrics = [];
+                if (Array.isArray(apiData.dashboard_metrics)) {
+                    const metricsObj = {};
+                    apiData.dashboard_metrics.forEach(metric => {
+                        let value;
+                        try {
+                            value = JSON.parse(metric.metric_value);
+                        } catch {
+                            value = metric.metric_value;
+                        }
+                        metricsObj[metric.metric_name] = value;
+                    });
+                    dashboardData.dashboard_metrics.push(metricsObj);
+                }
+
+                // Optionally, add a summary if you want to show a summary card
+                dashboardData.summary = apiData.summary || null;
+
+                processAnalysisData(dashboardData);
+
+            } catch (error) {
+                console.error('Error loading analysis:', error);
+                // Optionally fallback to sample data
+                // processAnalysisData(sampleData);
+            }
+        }
+
+        // Process the data from your API response
+        function processAnalysisData(data) {
+            // If data is an array, convert to object by type (legacy support)
+            let dataByType = {};
+            if (Array.isArray(data)) {
+                data.forEach(item => {
+                    dataByType[item.analysis_type] = item.data;
+                });
+            } else if (typeof data === 'object' && data !== null) {
+                dataByType = data;
+            }
+
+            // Update UI with organized data
+            updateSummary(dataByType.summary);
+            // Use the first action plan if multiple
+            updateInsights(dataByType.insights);
+            updateActionPlan(
+                Array.isArray(dataByType.action_plans) ? dataByType.action_plans[0] : dataByType.action_plans
+            );
+            updateRootCauses(dataByType.root_causes);
+            updateMetrics(
+                Array.isArray(dataByType.dashboard_metrics) && dataByType.dashboard_metrics.length > 0
+                    ? dataByType.dashboard_metrics[0]
+                    : dataByType.dashboard_metrics
+            );
+            updateConfidenceScores(dataByType.insights);
+        }
+
+        function updateSummary(summaryData) {
+            if (!summaryData) {
+                summaryText.textContent = "No summary available.";
+                urgencyBadge.className = "urgency-badge urgency-low";
+                urgencyBadge.textContent = "Low Urgency";
+                return;
+            }
+            summaryText.textContent = summaryData.key_takeaway;
+            document.getElementById('generatedTime').textContent = new Date().toLocaleTimeString();
+            urgencyBadge.className = `urgency-badge urgency-${summaryData.urgency_level}`;
+            urgencyBadge.textContent = `${summaryData.urgency_level} Urgency`;
+        }
+
+        function updateInsights(insights) {
+            if (!insights || !Array.isArray(insights)) return;
+
+            insightsContainer.innerHTML = '';
+            document.getElementById('insightCount').textContent = insights.length;
+            document.getElementById('actionableCount').textContent = insights.filter(i => i.actionable).length;
+
+            insights.forEach((insight, index) => {
+                const insightCard = document.createElement('div');
+                insightCard.className = 'insight-card';
+
+                const confidencePercent = Math.round(insight.confidence * 100);
+
+                insightCard.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="insight-type type-${insight.type}">
+                            <i class="fas fa-${getInsightIcon(insight.type)} me-1"></i>
+                            ${insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
+                        </span>
+                        <span class="confidence-badge">
+                            <i class="fas fa-brain"></i>
+                            ${confidencePercent}% confidence
+                        </span>
+                    </div>
+                    <h5 class="mb-3">${insight.text}</h5>
+                    ${insight.evidence && insight.evidence.length > 0 ? `
+                        <div class="mb-3">
+                            <strong class="d-block mb-2"><i class="fas fa-clipboard-check me-1"></i> Evidence:</strong>
+                            ${insight.evidence.map(evidence => `
+                                <div class="evidence-item">${evidence}</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="category-tag">
+                            <i class="fas fa-tag me-1"></i>${insight.type}
+                        </span>
+                        ${insight.actionable ? `
+                            <span class="badge bg-success">
+                                <i class="fas fa-bolt me-1"></i>Actionable
+                            </span>
+                        ` : ''}
+                    </div>
+                `;
+
+                insightsContainer.appendChild(insightCard);
+            });
+        }
+
+        function updateActionPlan(planData) {
+            if (!planData) return;
+
+            document.getElementById('planName').textContent = planData.plan_name;
+            document.getElementById('planDescription').textContent = planData.description;
+            document.getElementById('planPriority').textContent = planData.priority.toUpperCase();
+            document.getElementById('planStatus').textContent = planData.status.toUpperCase();
+            document.getElementById('planDeadline').textContent = new Date(planData.deadline).toLocaleDateString();
+
+            actionItemsContainer.innerHTML = '';
+            document.getElementById('actionItemCount').textContent = planData.action_items.length;
+
+            // Count items by category
+            const immediateCount = planData.action_items.filter(item => item.category === 'immediate').length;
+            const mediumTermCount = planData.action_items.filter(item => item.category === 'medium_term').length;
+            const longTermCount = planData.action_items.filter(item => item.category === 'long_term').length;
+
+            document.getElementById('immediateCount').textContent = immediateCount;
+            document.getElementById('mediumTermCount').textContent = mediumTermCount;
+            document.getElementById('longTermCount').textContent = longTermCount;
+
+            // Update progress bars
+            const totalItems = planData.action_items.length;
+            document.getElementById('immediateProgress').style.width = `${(immediateCount / totalItems) * 100}%`;
+            document.getElementById('mediumTermProgress').style.width = `${(mediumTermCount / totalItems) * 100}%`;
+            document.getElementById('longTermProgress').style.width = `${(longTermCount / totalItems) * 100}%`;
+
+            // Render action items
+            planData.action_items.forEach((item, index) => {
+                const itemCard = document.createElement('div');
+                itemCard.className = `action-item-card priority-${item.priority}`;
+
+                const dueDate = new Date(item.due_date);
+                const daysRemaining = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+
+                itemCard.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="mb-1">${item.text}</h6>
+                            <div class="d-flex align-items-center gap-2 mt-2">
+                                <span class="badge bg-${getPriorityColor(item.priority)}">${item.priority.toUpperCase()}</span>
+                                <span class="status-badge status-${item.status}">${item.status.toUpperCase()}</span>
+                                <span class="category-tag">${item.category.replace('_', ' ')}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold">${item.owner}</div>
+                            <small class="text-muted">${item.estimated_effort} effort</small>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small>
+                            <i class="far fa-calendar me-1"></i>
+                            Due: ${dueDate.toLocaleDateString()}
+                            ${daysRemaining > 0 ? `(${daysRemaining} days)` : '(Overdue)'}
+                        </small>
+                        <button class="btn btn-sm btn-outline-primary" onclick="markComplete(${index})">
+                            <i class="fas fa-check me-1"></i>Complete
+                        </button>
+                    </div>
+                `;
+
+                actionItemsContainer.appendChild(itemCard);
+            });
+        }
+
+        function updateRootCauses(rootCauses) {
+            if (!rootCauses || !Array.isArray(rootCauses)) return;
+
+            rootCausesContainer.innerHTML = '';
+            document.getElementById('rootCauseCount').textContent = rootCauses.length;
+
+            rootCauses.forEach((cause, index) => {
+                const causeCard = document.createElement('div');
+                causeCard.className = 'insight-card';
+                causeCard.style.borderLeftColor = getImpactColor(cause.impact_level);
+
+                causeCard.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="mb-0">${cause.issue}</h5>
+                        <span class="badge ${getImpactBadgeClass(cause.impact_level)}">
+                            ${cause.impact_level.toUpperCase()} Impact
+                        </span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong class="d-block mb-2"><i class="fas fa-search me-1"></i> Root Cause:</strong>
+                        <p class="mb-0">${cause.root_cause}</p>
+                    </div>
+                    
+                    ${cause.evidence && cause.evidence.length > 0 ? `
+                        <div class="mb-3">
+                            <strong class="d-block mb-2"><i class="fas fa-clipboard-list me-1"></i> Evidence:</strong>
+                            ${cause.evidence.map(evidence => `
+                                <div class="evidence-item">${evidence}</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    
+                    ${cause.recommendations && cause.recommendations.length > 0 ? `
+                        <div>
+                            <strong class="d-block mb-2"><i class="fas fa-lightbulb me-1"></i> Recommendations:</strong>
+                            <ul class="mb-0">
+                                ${cause.recommendations.map(rec => `
+                                    <li>${rec}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+
+                rootCausesContainer.appendChild(causeCard);
+            });
+        }
+
+        function updateMetrics(metrics) {
+            if (!metrics) return;
+
+            // Destroy previous chart and only recreate canvas if it exists (prevents infinite scroll)
+            if (metricsChart) {
+                metricsChart.destroy();
+                metricsChart = null;
+            }
+            // Only remove and recreate the canvas if it exists and is not already replaced
+            const oldCanvas = document.getElementById('aiMetricsChart');
+            if (oldCanvas) {
+                // Remove all Chart.js event listeners and parent children except the canvas
+                const parent = oldCanvas.parentNode;
+                // Remove all canvas elements except the first one
+                const canvases = parent.querySelectorAll('canvas');
+                if (canvases.length > 1) {
+                    for (let i = 1; i < canvases.length; i++) {
+                        parent.removeChild(canvases[i]);
+                    }
+                }
+                // If the canvas is not the only child, remove extra children
+                while (parent.childNodes.length > 1) {
+                    if (parent.lastChild !== oldCanvas) {
+                        parent.removeChild(parent.lastChild);
+                    } else {
+                        parent.removeChild(parent.firstChild);
+                    }
+                }
+            }
+
+            const ctx = document.getElementById('aiMetricsChart').getContext('2d');
+            metricsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Insights', 'Actionable', 'Root Causes', 'High Priority'],
+                    datasets: [{
+                        data: [
+                            metrics.ai_enhanced?.insight_count || 0,
+                            metrics.ai_enhanced?.actionable_insights || 0,
+                            metrics.ai_enhanced?.root_cause_count || 0,
+                            metrics.recommendations_summary?.immediate_count || 0
+                        ],
+                        backgroundColor: [
+                            '#4361ee',
+                            '#4cc9f0',
+                            '#f72585',
+                            '#7209b7'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function updateConfidenceScores(insights) {
+            if (!insights || !Array.isArray(insights)) return;
+
+            confidenceScores.innerHTML = '';
+
+            insights.forEach((insight, index) => {
+                const confidencePercent = Math.round(insight.confidence * 100);
+
+                const scoreElement = document.createElement('div');
+                scoreElement.className = 'mb-3';
+                scoreElement.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-truncate" style="max-width: 70%">${insight.type}</span>
+                        <span class="fw-bold">${confidencePercent}%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar" 
+                             style="width: ${confidencePercent}%; background: ${getConfidenceColor(confidencePercent)}">
+                        </div>
+                    </div>
+                `;
+
+                confidenceScores.appendChild(scoreElement);
+            });
+        }
+
+        // Helper functions
+        function getInsightIcon(type) {
+            const icons = {
+                pattern: 'chart-line',
+                issue: 'exclamation-triangle',
+                satisfaction: 'smile',
+                dissatisfaction: 'frown',
+                recommendation: 'lightbulb',
+                opportunity: 'gem',
+                general: 'info-circle'
+            };
+            return icons[type] || 'info-circle';
+        }
+
+        function getPriorityColor(priority) {
+            const colors = {
+                high: 'danger',
+                medium: 'warning',
+                low: 'success',
+                critical: 'dark'
+            };
+            return colors[priority] || 'secondary';
+        }
+
+        function getImpactColor(impact) {
+            const colors = {
+                high: '#f44336',
+                medium: '#ff9800',
+                low: '#4caf50',
+                critical: '#9c27b0'
+            };
+            return colors[impact] || '#6c757d';
+        }
+
+        function getImpactBadgeClass(impact) {
+            const classes = {
+                high: 'bg-danger',
+                medium: 'bg-warning',
+                low: 'bg-success',
+                critical: 'bg-dark'
+            };
+            return classes[impact] || 'bg-secondary';
+        }
+
+        function getConfidenceColor(percent) {
+            if (percent >= 90) return '#4CAF50';
+            if (percent >= 75) return '#8BC34A';
+            if (percent >= 60) return '#FFC107';
+            return '#F44336';
+        }
+
+        // Export functionality
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            const dataStr = JSON.stringify(analysisData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = `ai-analysis-${new Date().toISOString().split('T')[0]}.json`;
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        });
+
+        // Mark action item as complete
+        function markComplete(itemIndex) {
+            if (confirm('Mark this action item as complete?')) {
+                // Here you would typically call your API
+                const btn = event.target.closest('button');
+                btn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Completed';
+                btn.className = 'btn btn-sm btn-success';
+                btn.disabled = true;
+
+                // Update status in your backend
+                updateActionItemStatus(itemIndex, 'completed');
+            }
+        }
+
+        async function updateActionItemStatus(itemIndex, status) {
+            // Call your API to update the action item status
+            try {
+                const response = await fetch('/demo2/api/action-items/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ itemIndex, status })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update status');
+                }
+            } catch (error) {
+                console.error('Error updating action item:', error);
+                alert('Failed to update status. Please try again.');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('survey_user_email');
+            localStorage.removeItem('survey_user_name');
+            window.location.href = '/login.html';
+        }
+
+        // Sample data for testing
+        const sampleData = []; // Add your actual data array here
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add login check on page load
+            if (localStorage.getItem('userLoggedIn') !== 'true') {
+                window.location.href = '/login.html';
+                return;
+            }
+            // Call the API to load data
+            loadAnalysisData();
+
+            // Tab logic
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

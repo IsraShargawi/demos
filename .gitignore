@@ -1,0 +1,5 @@
+/backend/node_modules
+/backend/demos.dbbackend/.env
+.env
+backend/.env
+/backend/demos.db

@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAE Compliance Check</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ce1126 0%, #00732f 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #718096;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #00732f 0%, #005a25 100%);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.completed .step-circle {
+            background: linear-gradient(135deg, #00732f 0%, #005a25 100%);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #718096;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: #00732f;
+        }
+
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .input-field,
+        .select-field {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .select-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+
+        .input-field:focus,
+        .select-field:focus {
+            outline: none;
+            border-color: #00732f;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 115, 47, 0.1);
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .radio-card:hover {
+            border-color: #00732f;
+            transform: translateY(-2px);
+        }
+
+        .radio-card.selected {
+            border-color: #00732f;
+            background: #f0fff4;
+            box-shadow: 0 5px 15px rgba(0, 115, 47, 0.1);
+        }
+
+        .radio-card input {
+            display: none;
+        }
+
+        .radio-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .voice-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px dashed #00732f;
+            margin: 30px 0;
+        }
+
+        .voice-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #00732f;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .file-upload-section {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px dashed #00732f;
+            margin: 30px 0;
+        }
+
+        .file-upload-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #00732f;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #00732f;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(0, 115, 47, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background: rgba(0, 115, 47, 0.1);
+            border-color: #005a25;
+        }
+
+        .upload-area.dragover {
+            background: rgba(0, 115, 47, 0.15);
+            border-color: #005a25;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #00732f;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+        }
+
+        .file-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .file-size {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #ce1126;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .file-remove:hover {
+            background: rgba(206, 17, 38, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00732f 0%, #005a25 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 115, 47, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ce1126 0%, #a50e1e 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(206, 17, 38, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .transcript-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 120px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .transcript-box.recording {
+            border-color: #ce1126;
+            background: #fff5f5;
+        }
+
+        .transcript-box.processed {
+            border-color: #00732f;
+            background: #f0fff4;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .recording .status-dot {
+            background: #ce1126;
+        }
+
+        .processed .status-dot {
+            background: #00732f;
+        }
+
+        .timer {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #00732f 0%, #005a25 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .recording-animation {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ce1126;
+            animation: pulse 1s infinite;
+        }
+
+        .pulse-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .pulse-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .summary-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .summary-value {
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        /* Add confetti canvas and modal styles */
+        .modal-success {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-success.active {
+            display: flex;
+            animation: fadeIn 0.5s;
+        }
+
+        .modal-success-content {
+            background: #fff;
+            border-radius: 18px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            position: relative;
+            min-width: 320px;
+            max-width: 90vw;
+        }
+
+        .success-check {
+            font-size: 3.5rem;
+            color: #28a745;
+            margin-bottom: 18px;
+            animation: popIn 0.7s cubic-bezier(.68, -0.55, .27, 1.55);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.2);
+                opacity: 0;
+            }
+
+            80% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success-progress {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 8px;
+            margin: 18px 0 10px 0;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .success-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00732f 0%, #00c853 100%);
+            width: 0%;
+            transition: width 1.2s cubic-bezier(.4, 2, .6, 1);
+        }
+
+        .dashboard-link {
+            display: inline-block;
+            margin-top: 22px;
+            background: linear-gradient(135deg, #00732f 0%, #005a25 100%);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+
+        .dashboard-link:hover {
+            background: linear-gradient(135deg, #005a25 0%, #00732f 100%);
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            pointer-events: none;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 3000;
+        }
+
+        /* AI Thinking Modal Styles */
+        .modal-ai {
+            display: none;
+            position: fixed;
+            z-index: 2100;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-ai.active {
+            display: flex;
+            animation: fadeIn 0.5s;
+        }
+
+        .modal-ai-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 48px 36px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            min-width: 320px;
+            max-width: 90vw;
+            position: relative;
+        }
+
+        .ai-brain {
+            font-size: 4rem;
+            margin-bottom: 18px;
+            animation: aiPulse 1.5s infinite;
+            display: inline-block;
+        }
+
+        @keyframes aiPulse {
+            0% {
+                filter: drop-shadow(0 0 0 #00732f);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 16px #00c853);
+            }
+
+            100% {
+                filter: drop-shadow(0 0 0 #00732f);
+            }
+        }
+
+        .ai-thinking {
+            font-size: 1.3rem;
+            color: #00732f;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .ai-dots {
+            display: inline-block;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .ai-dot {
+            opacity: 0.3;
+            animation: dotBlink 1.2s infinite;
+        }
+
+        .ai-dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .ai-dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes dotBlink {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .ai-listening {
+            margin-top: 18px;
+            color: #4a5568;
+            font-size: 1.05rem;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ai-wave {
+            width: 32px;
+            height: 18px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .ai-wave-bar {
+            display: inline-block;
+            width: 4px;
+            height: 100%;
+            margin: 0 1px;
+            background: #00c853;
+            border-radius: 2px;
+            animation: waveAnim 1s infinite;
+        }
+
+        .ai-wave-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-wave-bar:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .ai-wave-bar:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .ai-wave-bar:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+
+        @keyframes waveAnim {
+            0%,
+            100% {
+                height: 8px;
+            }
+
+            50% {
+                height: 18px;
+            }
+        }
+
+        .ai-result {
+            margin-top: 22px;
+            font-size: 1.15rem;
+            color: #2d3748;
+            font-weight: 500;
+            display: none;
+        }
+
+        .ai-dashboard-link {
+            display: none;
+            margin-top: 22px;
+            background: linear-gradient(135deg, #00732f 0%, #005a25 100%);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+
+        .ai-dashboard-link:hover {
+            background: linear-gradient(135deg, #005a25 0%, #00732f 100%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .step-label {
+                font-size: 0.75rem;
+            }
+
+            .radio-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ UAE Compliance Checker</h1>
+            <p>Complete Regulatory Assessment in 4 Simple Steps</p>
+        </div>
+
+        <div class="form-container">
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Personal Info</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Business Details</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Project Description</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Review & Submit</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+            </div>
+
+            <form id="complianceForm"
+                action="https://vmi2886035.contaboserver.net/webhook/f740a771-7c58-4338-9e18-a4385110de41"
+                method="POST" enctype="multipart/form-data">
+                <!-- Step 1: Personal Information - /webhook-test/ -->
+                <div class="form-step active" id="step1">
+                    <h2 style="margin-bottom: 25px; color: #2d3748;">Personal Information</h2>
+
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" class="input-field" placeholder="Enter your full name"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" class="input-field"
+                            placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="input-field" placeholder="+971 XX XXX XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company" name="company" class="input-field"
+                            placeholder="Enter your company name">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                            Next Step <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Business Details -->
+                <div class="form-step" id="step2">
+                    <h2 style="margin-bottom: 25px; color: #2d3748;">Business Details</h2>
+
+                    <div class="form-group">
+                        <label>Business Type *</label>
+                        <div class="radio-group">
+                            <label class="radio-card">
+                                <input type="radio" name="business_type" value="startup" required>
+                                <div class="radio-icon">🚀</div>
+                                <div>Startup</div>
+                                <small>New business venture</small>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="business_type" value="sme">
+                                <div class="radio-icon">🏢</div>
+                                <div>SME</div>
+                                <small>Small to medium enterprise</small>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="business_type" value="corporation">
+                                <div class="radio-icon">🏛️</div>
+                                <div>Corporation</div>
+                                <small>Large established company</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industry">Industry Sector *</label>
+                        <select id="industry" name="industry" class="select-field" required>
+                            <option value="">Select your industry</option>
+                            <option value="finance">Financial Services</option>
+                            <option value="technology">Technology & IT</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="retail">Retail & E-commerce</option>
+                            <option value="realestate">Real Estate</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employees">Number of Employees</label>
+                        <select id="employees" name="employees" class="select-field">
+                            <option value="">Select employee count</option>
+                            <option value="1-10">1-10</option>
+                            <option value="11-50">11-50</option>
+                            <option value="51-200">51-200</option>
+                            <option value="201-500">201-500</option>
+                            <option value="500+">500+</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(1)">
+                            <span>←</span> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                            Next Step <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Project Description -->
+                <div class="form-step" id="step3">
+                    <h2 style="margin-bottom: 25px; color: #2d3748;">Project Description</h2>
+
+                    <!-- Voice Recording Section -->
+                    <div class="voice-section">
+                        <div class="voice-header">
+                            <span>🎤</span>
+                            <span>Voice Description</span>
+                        </div>
+
+                        <p style="color: #4a5568; margin-bottom: 20px; line-height: 1.6;">
+                            Describe your project using your voice. Speak clearly about your business model,
+                            target market, and any financial services you plan to offer.
+                        </p>
+
+                        <div class="button-group">
+                            <button type="button" id="recordBtn" class="btn btn-primary">
+                                <span>🎤</span>
+                                Start Recording
+                            </button>
+                            <button type="button" id="stopBtn" class="btn btn-danger" style="display: none;">
+                                <span>⏹️</span>
+                                Stop Recording
+                            </button>
+                        </div>
+
+                        <div id="timer" class="timer" style="display: none;">
+                            Recording: <span id="timeDisplay">0:00</span>
+                        </div>
+
+                        <div id="transcript" class="transcript-box">
+                            <div class="status-indicator">
+                                <div class="status-dot"></div>
+                                <span>Ready to record</span>
+                            </div>
+                            <em>Your voice transcription will appear here after recording...</em>
+                        </div>
+                    </div>
+
+                    <!-- File Upload Section -->
+                    <div class="file-upload-section">
+                        <div class="file-upload-header">
+                            <span>📎</span>
+                            <span>Supporting Documents</span>
+                        </div>
+
+                        <p style="color: #4a5568; margin-bottom: 20px; line-height: 1.6;">
+                            Upload relevant documents for better analysis (business plan, financial projections,
+                            regulatory documents, etc.). Max file size: 10MB per file.
+                        </p>
+
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">📁</div>
+                            <h3 style="color: #00732f; margin-bottom: 10px;">Drop files here or click to upload</h3>
+                            <p style="color: #718096; font-size: 0.9rem;">
+                                Supported formats: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG
+                            </p>
+                            <input type="file" id="fileInput" class="file-input" multiple
+                                accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                        </div>
+
+                        <div class="file-list" id="fileList">
+                            <!-- File items will be added here dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Text Description Alternative -->
+                    <div class="text-alternative">
+                        <label for="description">Or Type Your Description</label>
+                        <textarea id="description" name="description" class="input-field"
+                            placeholder="Alternatively, type your description here..."></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+                            <span>←</span> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                            Next Step <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review & Submit -->
+                <div class="form-step" id="step4">
+                    <h2 style="margin-bottom: 25px; color: #2d3748;">Review & Submit</h2>
+
+                    <div class="summary-card">
+                        <h3 style="margin-bottom: 20px; color: #00732f;">Submission Summary</h3>
+
+                        <div class="summary-item">
+                            <span class="summary-label">Full Name:</span>
+                            <span class="summary-value" id="summaryName">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Email:</span>
+                            <span class="summary-value" id="summaryEmail">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Phone:</span>
+                            <span class="summary-value" id="summaryPhone">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Company:</span>
+                            <span class="summary-value" id="summaryCompany">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Business Type:</span>
+                            <span class="summary-value" id="summaryBusinessType">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Industry:</span>
+                            <span class="summary-value" id="summaryIndustry">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Employees:</span>
+                            <span class="summary-value" id="summaryEmployees">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Description:</span>
+                            <span class="summary-value" id="summaryDescription">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Files Uploaded:</span>
+                            <span class="summary-value" id="summaryFiles">-</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(3)">
+                            <span>←</span> Previous
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            🚀 Submit for Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <input type="hidden" id="audioData" name="audio_data">
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal & Confetti -->
+    <div class="modal-success" id="successModal">
+        <div class="modal-success-content">
+            <div class="success-check">🎉</div>
+            <h2 id="successTitle">Submission Successful!</h2>
+            <div class="success-progress">
+                <div class="success-progress-bar" id="successProgressBar"></div>
+            </div>
+            <div id="successMessage" style="margin-top:10px; color:#2d3748;">
+                Your compliance request is being analyzed.<br>
+                <span id="aiTeaser"></span>
+            </div>
+            <a href="#" class="dashboard-link" id="dashboardLink" style="display:none;">Go to Dashboard</a>
+        </div>
+    </div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- AI Thinking Modal -->
+    <div class="modal-ai" id="aiModal">
+        <div class="modal-ai-content">
+            <div class="ai-brain">🧠</div>
+            <div class="ai-thinking">AI is thinking...</div>
+            <div class="ai-dots">
+                <span class="ai-dot">.</span>
+                <span class="ai-dot">.</span>
+                <span class="ai-dot">.</span>
+            </div>
+            <div class="ai-listening">
+                <span>Listening for agent response</span>
+                <span class="ai-wave">
+                    <span class="ai-wave-bar"></span>
+                    <span class="ai-wave-bar"></span>
+                    <span class="ai-wave-bar"></span>
+                    <span class="ai-wave-bar"></span>
+                    <span class="ai-wave-bar"></span>
+                </span>
+            </div>
+            <div class="ai-result" id="aiResult"></div>
+            <a href="#" class="ai-dashboard-link" id="aiDashboardLink">Go to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingStartTime;
+        let timerInterval;
+        let currentStep = 1;
+        let uploadedFiles = [];
+
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const transcriptDiv = document.getElementById('transcript');
+        const descriptionTextarea = document.getElementById('description');
+        const audioDataInput = document.getElementById('audioData');
+        const timerDiv = document.getElementById('timer');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const progressFill = document.getElementById('progressFill');
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileList = document.getElementById('fileList');
+
+        // Form navigation
+        function nextStep(step) {
+            if (validateStep(currentStep)) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+
+                currentStep = step;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+
+                // Update progress bar
+                progressFill.style.width = `${(currentStep / 4) * 100}%`;
+
+                // Update summary on step 4
+                if (currentStep === 4) {
+                    updateSummary();
+                }
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+
+            currentStep = step;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+
+            // Update progress bar
+            progressFill.style.width = `${(currentStep / 4) * 100}%`;
+        }
+
+        function validateStep(step) {
+            switch (step) {
+                case 1:
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    if (!name || !email) {
+                        alert('Please fill in all required fields (Name and Email).');
+                        return false;
+                    }
+                    if (!isValidEmail(email)) {
+                        alert('Please enter a valid email address.');
+                        return false;
+                    }
+                    localStorage.setItem('userEmail', email);
+                    return true;
+
+                case 2:
+                    const businessType = document.querySelector('input[name="business_type"]:checked');
+                    const industry = document.getElementById('industry').value;
+                    if (!businessType || !industry) {
+                        alert('Please select your business type and industry sector.');
+                        return false;
+                    }
+                    return true;
+
+                case 3:
+                    const hasAudio = audioDataInput.value !== '';
+                    const hasText = descriptionTextarea.value.trim() !== '';
+                    if (!hasAudio && !hasText) {
+                        alert('Please either record a voice description or type your project description.');
+                        return false;
+                    }
+                    return true;
+
+                default:
+                    return true;
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function updateSummary() {
+            document.getElementById('summaryName').textContent = document.getElementById('name').value || '-';
+            document.getElementById('summaryEmail').textContent = document.getElementById('email').value || '-';
+            document.getElementById('summaryPhone').textContent = document.getElementById('phone').value || '-';
+            document.getElementById('summaryCompany').textContent = document.getElementById('company').value || '-';
+
+            const businessType = document.querySelector('input[name="business_type"]:checked');
+            document.getElementById('summaryBusinessType').textContent = businessType ? businessType.value : '-';
+
+            document.getElementById('summaryIndustry').textContent = document.getElementById('industry').value || '-';
+            document.getElementById('summaryEmployees').textContent = document.getElementById('employees').value || '-';
+
+            const description = descriptionTextarea.value.trim();
+            document.getElementById('summaryDescription').textContent = description || (audioDataInput.value ? 'Voice recording provided' : '-');
+
+            document.getElementById('summaryFiles').textContent = uploadedFiles.length > 0 ? `${uploadedFiles.length} file(s) uploaded` : 'No files uploaded';
+        }
+
+        // Voice recording functionality
+        recordBtn.addEventListener('click', startRecording);
+        stopBtn.addEventListener('click', stopRecording);
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 44100
+                    }
+                });
+
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = processRecording;
+
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+
+                // Update UI
+                recordBtn.style.display = 'none';
+                stopBtn.style.display = 'flex';
+                timerDiv.style.display = 'block';
+                transcriptDiv.className = 'transcript-box recording';
+                transcriptDiv.innerHTML = `
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Recording in progress</span>
+                    </div>
+                    <div class="recording-animation">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-dot"></div>
+                    </div>
+                    <p style="margin-top: 10px; color: #ce1126;">Speak clearly about your case...</p>
+                `;
+
+                // Start timer
+                timerInterval = setInterval(updateTimer, 1000);
+
+            } catch (error) {
+                alert('Microphone access denied. Please allow microphone permissions to use voice recording.');
+                console.error('Error accessing microphone:', error);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                clearInterval(timerInterval);
+            }
+        }
+
+        function processRecording() {
+            recordBtn.style.display = 'flex';
+            stopBtn.style.display = 'none';
+            timerDiv.style.display = 'none';
+
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+
+            // Convert to base64 for submission
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = () => {
+                const base64Audio = reader.result;
+                audioDataInput.value = base64Audio;
+
+                transcriptDiv.className = 'transcript-box processed';
+                transcriptDiv.innerHTML = `
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Recording Complete</span>
+                    </div>
+                    <p style="color: #00732f; margin-top: 10px;">✅ Voice recording captured successfully! Your audio is ready for AI analysis.</p>
+                `;
+
+                descriptionTextarea.placeholder = "Voice recording ready for analysis... (You can still type additional details)";
+            };
+        }
+
+        // File upload functionality
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+                    continue;
+                }
+
+                const fileObj = {
+                    file: file,
+                    id: Date.now() + Math.random(),
+                    name: file.name,
+                    size: formatFileSize(file.size),
+                    type: file.type
+                };
+
+                uploadedFiles.push(fileObj);
+                renderFileItem(fileObj);
+            }
+
+            // Clear the input
+            fileInput.value = '';
+        }
+
+        function renderFileItem(fileObj) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">${getFileIcon(fileObj.type)}</div>
+                    <div class="file-details">
+                        <div class="file-name">${fileObj.name}</div>
+                        <div class="file-size">${fileObj.size}</div>
+                    </div>
+                </div>
+                <button type="button" class="file-remove" onclick="removeFile('${fileObj.id}')">
+                    🗑️
+                </button>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(id) {
+            uploadedFiles = uploadedFiles.filter(file => file.id !== id);
+            fileList.innerHTML = '';
+            uploadedFiles.forEach(renderFileItem);
+        }
+
+        function getFileIcon(fileType) {
+            if (fileType.includes('pdf')) return '📄';
+            if (fileType.includes('word') || fileType.includes('document')) return '📝';
+            if (fileType.includes('sheet') || fileType.includes('excel')) return '📊';
+            if (fileType.includes('image')) return '🖼️';
+            return '📎';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Radio card selection
+        document.querySelectorAll('.radio-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+
+                // Update UI
+                document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // --- Success Modal & Confetti Logic ---
+        function showSuccessModal(userName, userEmail) {
+            const modal = document.getElementById('successModal');
+            const progressBar = document.getElementById('successProgressBar');
+            const dashboardLink = document.getElementById('dashboardLink');
+            const aiTeaser = document.getElementById('aiTeaser');
+            const title = document.getElementById('successTitle');
+            const msg = document.getElementById('successMessage');
+
+            // Personalized
+            title.textContent = `Thank you, ${userName || 'User'}!`;
+            msg.innerHTML = `Your compliance request is being analyzed.<br><span id="aiTeaser"></span>`;
+
+            // AI Teaser (randomized for demo)
+            const teasers = [
+                "Estimated Risk: <b>Low</b> 🟢",
+                "Expected Score: <b>8/10</b> ⭐",
+                "Initial Review: <b>Compliant</b> ✅",
+                "AI: Your business looks promising! 🚀"
+            ];
+            aiTeaser.innerHTML = teasers[Math.floor(Math.random() * teasers.length)];
+
+            // Progress bar animation
+            progressBar.style.width = '0%';
+            dashboardLink.style.display = 'none';
+            modal.classList.add('active');
+            setTimeout(() => { progressBar.style.width = '100%'; }, 100);
+
+            // Confetti
+            launchConfetti();
+
+            // After 2.2s, show dashboard link
+            setTimeout(() => {
+                dashboardLink.href = `/requests.html?email=${encodeURIComponent(userEmail)}`;
+                dashboardLink.style.display = 'inline-block';
+                dashboardLink.textContent = '🚀 Go to Your Dashboard';
+            }, 2200);
+        }
+
+        // --- Confetti Animation (simple) ---
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let confetti = [];
+            for (let i = 0; i < 80; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * -canvas.height,
+                    r: 6 + Math.random() * 8,
+                    d: 2 + Math.random() * 2,
+                    color: `hsl(${Math.random() * 360},90%,60%)`,
+                    tilt: Math.random() * 10 - 5
+                });
+            }
+            let frame = 0;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confetti.forEach(c => {
+                    ctx.beginPath();
+                    ctx.ellipse(c.x, c.y, c.r, c.r / 2, c.tilt, 0, 2 * Math.PI);
+                    ctx.fillStyle = c.color;
+                    ctx.fill();
+                });
+                update();
+            }
+            function update() {
+                frame++;
+                confetti.forEach(c => {
+                    c.y += c.d + Math.sin(frame / 10 + c.x);
+                    c.x += Math.sin(frame / 20 + c.y / 50) * 2;
+                    if (c.y > canvas.height) {
+                        c.y = -10;
+                        c.x = Math.random() * canvas.width;
+                    }
+                });
+            }
+            let anim = setInterval(draw, 16);
+            setTimeout(() => {
+                clearInterval(anim);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }, 2500);
+        }
+
+        // --- AI Modal Logic ---
+        function showAIModal() {
+            const aiModal = document.getElementById('aiModal');
+            const aiResult = document.getElementById('aiResult');
+            const aiDashboardLink = document.getElementById('aiDashboardLink');
+            aiModal.classList.add('active');
+            aiResult.style.display = 'none';
+            aiDashboardLink.style.display = 'none';
+        }
+
+        function hideAIModal() {
+            document.getElementById('aiModal').classList.remove('active');
+        }
+
+        function showAIResult(message, dashboardUrl) {
+            const aiResult = document.getElementById('aiResult');
+            const aiDashboardLink = document.getElementById('aiDashboardLink');
+            aiResult.innerHTML = message;
+            aiResult.style.display = 'block';
+            aiDashboardLink.href = dashboardUrl;
+            aiDashboardLink.style.display = 'inline-block';
+        }
+
+        document.getElementById('aiDashboardLink').addEventListener('click', function () {
+            hideAIModal();
+        });
+
+        // --- Modify form submission handler ---
+        document.getElementById('complianceForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (validateStep(currentStep)) {
+                // Create FormData to handle file uploads
+                const formData = new FormData(this);
+
+                // Append uploaded files
+                uploadedFiles.forEach((fileObj, index) => {
+                    formData.append(`file_${index}`, fileObj.file);
+                });
+
+                // Show AI modal
+                showAIModal();
+
+                // Show loading state
+                const submitBtn = this.querySelector('.btn-submit') || this.querySelector('[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '🔄 Analyzing...';
+                submitBtn.disabled = true;
+
+                // --- Get user info for wow modal ---
+                const userName = document.getElementById('name').value || '';
+                const userEmail = document.getElementById('email').value || '';
+
+                // Submit form as before
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Start SSE subscription for agent callback
+                            listenForComplianceEvent(userEmail);
+                            this.reset();
+                        } else {
+                            throw new Error('Submission failed');
+                        }
+                    })
+                    .catch(error => {
+                        hideAIModal();
+                        alert('❌ There was an error submitting your assessment. Please try again.');
+                        console.error('Submission error:', error);
+                    })
+                    .finally(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    });
+            }
+        });
+
+        // --- SSE subscription for compliance event ---
+        let complianceEventSource;
+        function listenForComplianceEvent(email) {
+            if (complianceEventSource) {
+                complianceEventSource.close();
+            }
+            complianceEventSource = new EventSource(`/api/compliance-events?email=${encodeURIComponent(email)}`);
+            complianceEventSource.onmessage = function (event) {
+                // Hide modal and redirect when event received
+                hideAIModal();
+                window.location.href = `/requests?email=${encodeURIComponent(email)}`;
+            };
+            complianceEventSource.onerror = function () {
+                // Optionally handle error (e.g. retry or fallback)
+                complianceEventSource.close();
+            };
+        }
+
+        // Real-time validation
+        document.querySelectorAll('.input-field, .select-field').forEach(field => {
+            field.addEventListener('input', function () {
+                if (this.value.trim() !== '') {
+                    this.style.borderColor = '#00732f';
+                    this.style.background = '#f0fff4';
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                    this.style.background = '#f8fafc';
+                }
+            });
+
+            field.addEventListener('change', function () {
+                if (this.value.trim() !== '') {
+                    this.style.borderColor = '#00732f';
+                    this.style.background = '#f0fff4';
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                    this.style.background = '#f8fafc';
+                }
+            });
+        });
+
+        // --- Set form action based on staging param ---
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('staging')) {
+                document.getElementById('complianceForm').action =
+                    'https://vmi2886035.contaboserver.net/webhook-test/f740a771-7c58-4338-9e18-a4385110de41';
+            }
+        })();
+    </script>
+</body>
+
+</html>

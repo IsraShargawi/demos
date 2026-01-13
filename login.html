@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - UAE Compliance Portal</title>
+    <style>
+        :root {
+            --primary-color: #3c7042;
+            --secondary-color: #4361ee;
+            --sidebar-width: 240px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eaf5ee 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100vw - var(--sidebar-width));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        .input-field {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(60,112,66,0.08);
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3c7042 0%, #4361ee 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(60,112,66,0.13);
+        }
+        .divider { margin: 30px 0; position: relative; text-align: center; color: #718096; }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; right: 0; height: 1px; background: #e2e8f0;
+        }
+        .divider span { background: white; padding: 0 15px; position: relative; }
+        .demo-credentials {
+            background: #f7fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .demo-credentials h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 1rem; }
+        .demo-credentials p { color: #718096; font-size: 0.9rem; margin-bottom: 5px; }
+        .footer {
+            margin-top: 30px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        .footer a { color: var(--primary-color); text-decoration: none; }
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert-success {
+            background: #f0fff4;
+            border: 2px solid #9ae6b4;
+            color: #2f855a;
+        }
+        .alert-error {
+            background: #fed7d7;
+            border: 2px solid #feb2b2;
+            color: #c53030;
+        }
+        @media (max-width: 900px) {
+            .main-content { margin-left: 0; width: 100vw;}
+            .sidebar { display: none;}
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content" style="margin-left:0; width:100vw;">
+        <div class="login-container">
+            <div class="logo">🏛️</div>
+            <h1>Sadeed Portal</h1>
+            <p class="subtitle">Sign in to access your compliance dashboard</p>
+
+            <div id="successAlert" class="alert alert-success">
+                ✅ Login successful! Redirecting to dashboard...
+            </div>
+
+            <div id="errorAlert" class="alert alert-error">
+                ❌ Invalid credentials. Please try again.
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="input-field" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" class="input-field" placeholder="Enter your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="input-field" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- <div class="divider">
+                <span>Or continue with</span>
+            </div>
+
+            <button class="btn btn-google" onclick="signInWithGoogle()">
+                <span>🔗</span>
+                Sign in with Google
+            </button> -->
+
+            <div class="demo-credentials">
+                <h3>Demo Credentials</h3>
+                <p><strong>Email:</strong> demo@uaecompliance.ae</p>
+                <p><strong>Password:</strong> demo123</p>
+            </div>
+
+            <div class="footer">
+                Don't have an account? <a href="#" style="color: #00732f; text-decoration: none;">Contact Administrator</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+            
+            // Demo validation - in real app, this would be server-side
+            if (email === 'demo@uaecompliance.ae' && password === 'demo123') {
+                document.getElementById('successAlert').style.display = 'block';
+                document.getElementById('errorAlert').style.display = 'none';
+                
+                // Store user info for index.html
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('survey_user_email', email);
+                localStorage.setItem('survey_user_name', name);
+
+                setTimeout(() => {
+                    window.location.href = '/demo2/index.html';
+                }, 1500);
+            } else {
+                document.getElementById('errorAlert').style.display = 'block';
+                document.getElementById('successAlert').style.display = 'none';
+            }
+        });
+
+        // function signInWithGoogle() {
+        //     document.getElementById('successAlert').style.display = 'block';
+        //     document.getElementById('successAlert').innerHTML = '🔗 Redirecting to Google authentication...';
+            
+        //     setTimeout(() => {
+        //         localStorage.setItem('userLoggedIn', 'true');
+        //         window.location.href = '/requests';
+        //     }, 2000);
+        // }
+
+        // Check if already logged in
+        if (localStorage.getItem('userLoggedIn') === 'true') {
+            window.location.href = '/demo2/index.html';
+        }
+    </script>
+</body>
+</html>
