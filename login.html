@@ -9,131 +9,176 @@
             --primary-color: #3c7042;
             --secondary-color: #4361ee;
             --sidebar-width: 240px;
+            --accent-color: #f5f7fa;
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+            --input-focus: #b7e4c7;
+            --shadow: 0 8px 32px rgba(60,112,66,0.13);
+            --radius: 18px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #eaf5ee 100%);
+            background: linear-gradient(120deg, #eaf5ee 0%, #f5f7fa 100%);
             min-height: 100vh;
             margin: 0;
             padding: 0;
             display: flex;
+            /* Add a subtle pattern overlay */
+            position: relative;
         }
-        
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: url('https://www.transparenttextures.com/patterns/symphony.png') repeat;
+            opacity: 0.08;
+            pointer-events: none;
+        }
         .main-content {
-            margin-left: var(--sidebar-width);
-            width: calc(100vw - var(--sidebar-width));
+            margin-left: 0;
+            width: 100vw;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: linear-gradient(120deg, #f5f7fa 0%, #eaf5ee 100%);
+            position: relative;
+            z-index: 1;
         }
         .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            padding: 54px 42px 42px 42px;
+            border-radius: var(--radius);
+            box-shadow: 0 12px 48px 0 rgba(60,112,66,0.13), 0 1.5px 8px 0 rgba(67,97,238,0.07);
             width: 100%;
-            max-width: 400px;
+            max-width: 410px;
             text-align: center;
+            transition: box-shadow 0.2s;
+            position: relative;
+        }
+        .login-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius);
+            pointer-events: none;
+            box-shadow: 0 2px 24px 0 rgba(67,97,238,0.06);
+            opacity: 0.5;
+        }
+        .login-container:hover {
+            box-shadow: 0 20px 60px rgba(60,112,66,0.18), 0 2px 12px rgba(67,97,238,0.10);
         }
         .logo {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 3.2rem;
+            margin-bottom: 24px;
             color: var(--primary-color);
+            filter: drop-shadow(0 2px 8px #eaf5ee);
+            transition: transform 0.2s;
+        }
+        .login-container:hover .logo {
+            transform: scale(1.08) rotate(-2deg);
         }
         h1 {
             color: var(--primary-color);
-            margin-bottom: 10px;
-            font-weight: 700;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            font-size: 2.1rem;
         }
         .subtitle {
-            color: #718096;
-            margin-bottom: 30px;
+            color: #6c7a89;
+            margin-bottom: 34px;
+            font-size: 1.08rem;
         }
-        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group { margin-bottom: 22px; text-align: left; }
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             font-weight: 600;
             color: #2d3748;
+            letter-spacing: 0.2px;
         }
         .input-field {
             width: 100%;
             padding: 15px 20px;
-            border: 2px solid #e2e8f0;
+            border: 1.5px solid var(--input-border);
             border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #f8fafc;
+            background: var(--input-bg);
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+            box-shadow: 0 1px 2px rgba(60,112,66,0.03);
         }
         .input-field:focus {
             outline: none;
             border-color: var(--primary-color);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(60,112,66,0.08);
+            background: #fff;
+            box-shadow: 0 0 0 3px #b7e4c733;
         }
         .btn {
             width: 100%;
             padding: 15px;
             border: none;
             border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.08rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
+            transition: all 0.2s;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
         }
         .btn-primary {
-            background: linear-gradient(135deg, #3c7042 0%, #4361ee 100%);
-            color: white;
+            background: linear-gradient(120deg, #3c7042 0%, #4361ee 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(67,97,238,0.07);
         }
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(60,112,66,0.13);
+            background: linear-gradient(120deg, #4361ee 0%, #3c7042 100%);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(60,112,66,0.15);
         }
-        .divider { margin: 30px 0; position: relative; text-align: center; color: #718096; }
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 0; right: 0; height: 1px; background: #e2e8f0;
-        }
-        .divider span { background: white; padding: 0 15px; position: relative; }
         .demo-credentials {
             background: #f7fafc;
-            border: 2px dashed #e2e8f0;
+            border: 1.5px dashed #e2e8f0;
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
+            padding: 18px 20px;
+            margin-top: 32px;
             text-align: left;
+            font-size: 0.97rem;
         }
-        .demo-credentials h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 1rem; }
-        .demo-credentials p { color: #718096; font-size: 0.9rem; margin-bottom: 5px; }
+        .demo-credentials h3 { color: var(--primary-color); margin-bottom: 10px; font-size: 1.02rem; }
+        .demo-credentials p { color: #718096; font-size: 0.93rem; margin-bottom: 5px; }
         .footer {
-            margin-top: 30px;
+            margin-top: 32px;
             color: #718096;
-            font-size: 0.9rem;
+            font-size: 0.93rem;
         }
-        .footer a { color: var(--primary-color); text-decoration: none; }
+        .footer a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .footer a:hover { text-decoration: underline; }
         .alert {
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 20px;
             display: none;
+            font-size: 1rem;
         }
         .alert-success {
             background: #f0fff4;
-            border: 2px solid #9ae6b4;
+            border: 1.5px solid #9ae6b4;
             color: #2f855a;
         }
         .alert-error {
             background: #fed7d7;
-            border: 2px solid #feb2b2;
+            border: 1.5px solid #feb2b2;
             color: #c53030;
         }
         @media (max-width: 900px) {
             .main-content { margin-left: 0; width: 100vw;}
             .sidebar { display: none;}
+        }
+        @media (max-width: 600px) {
+            .login-container { padding: 28px 8vw 24px 8vw; }
         }
     </style>
 </head>
@@ -156,11 +201,6 @@
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" class="input-field" placeholder="Enter your email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" class="input-field" placeholder="Enter your name" required>
                 </div>
 
                 <div class="form-group">
@@ -199,7 +239,6 @@
             e.preventDefault();
             
             const email = document.getElementById('email').value;
-            const name = document.getElementById('name').value;
             const password = document.getElementById('password').value;
             
             // Demo validation - in real app, this would be server-side
@@ -210,7 +249,6 @@
                 // Store user info for index.html
                 localStorage.setItem('userLoggedIn', 'true');
                 localStorage.setItem('survey_user_email', email);
-                localStorage.setItem('survey_user_name', name);
 
                 setTimeout(() => {
                     window.location.href = '/demo2/index.html';
