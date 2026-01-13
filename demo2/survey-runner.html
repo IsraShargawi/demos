@@ -890,7 +890,8 @@
                 // Hide survey elements
                 document.getElementById('surveyHostContainer').style.display = 'none';
                 document.getElementById('surveyFooter').style.display = 'none';
-                document.getElementById('progressContainer').style.display = 'none';
+                // Fix: Hide all elements with class 'progress-container'
+                document.querySelectorAll('.progress-container').forEach(el => el.style.display = 'none');
                 document.getElementById('questionCounter').style.display = 'none';
                 document.getElementById('timeIndicator').style.display = 'none';
                 document.getElementById('surveyInfo').style.display = 'none';
