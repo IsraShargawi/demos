@@ -1059,7 +1059,7 @@ Thank you for your participation!
                     console.error('Error saving survey:', error);
                     let msg = error.message;
                     if (msg.includes('Failed to fetch')) {
-                        msg += ' (Is the backend server running? Are you accessing via http://localhost:3000?)';
+                        msg += ' (Is the backend server running? Are you accessing via http://localhost:3002?)';
                     }
                     showToast('Error', 'Failed to save survey: ' + msg);
                 }
@@ -1101,7 +1101,7 @@ Thank you for your participation!
                         console.error('Error publishing survey:', error);
                         let msg = error.message;
                         if (msg.includes('Failed to fetch')) {
-                            msg += ' (Is the backend server running? Are you accessing via http://localhost:3000?)';
+                            msg += ' (Is the backend server running? Are you accessing via http://localhost:3002?)';
                         }
                         showToast('Error', 'Failed to publish survey: ' + msg);
                     }
