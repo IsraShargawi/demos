@@ -971,10 +971,11 @@ Thank you for your participation!
 
             function checkLogin() {
                 if (!currentUser.email) {
-                    showToast('Error', 'Please login first at the login page');
-                    return false;
+                    window.location.href = '/login';
+                    //showToast('Error', 'Please login first at the login page');
+                    //return false;
                 }
-                return true;
+                //return true;
             }
 
             function updateStats() {
