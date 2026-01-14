@@ -445,9 +445,9 @@
             <i class="fas fa-leaf"></i> Sadeed
         </div>
         <nav class="nav flex-column w-100">
-            <a class="nav-link active" href="#" id="nav-builder"><i class="fas fa-pen-nib"></i> Survey Builder</a>
-            <a class="nav-link" href="#" id="nav-my-surveys"><i class="fas fa-clipboard-list"></i> Surveys</a>
-            <a class="nav-link" href="#" id="nav-responses"><i class="fas fa-chart-bar"></i> Responses</a>
+            <a class="nav-link active" href="?section=builder" id="nav-builder" data-section="builder"><i class="fas fa-pen-nib"></i> Survey Builder</a>
+            <a class="nav-link" href="?section=my-surveys" id="nav-my-surveys" data-section="my-surveys"><i class="fas fa-clipboard-list"></i> Surveys</a>
+            <a class="nav-link" href="?section=responses" id="nav-responses" data-section="responses"><i class="fas fa-chart-bar"></i> Responses</a>
         </nav>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
@@ -902,18 +902,36 @@ Thank you for your participation!
             }
 
             function setupEventListeners() {
-                // Navigation
-                document.getElementById('nav-builder').addEventListener('click', () => showView('builder'));
-                document.getElementById('nav-my-surveys').addEventListener('click', () => {
-                    if (checkLogin()) {
-                        showView('my-surveys');
-                        loadUserSurveys();
-                    }
-                });
-                document.getElementById('nav-responses').addEventListener('click', () => {
-                    if (checkLogin()) {
-                        showView('responses');
-                    }
+                // Navigation: render section by data-section attribute and update URL with section (& id if present)
+                document.querySelectorAll('.nav-link[id^="nav-"]').forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const section = this.getAttribute('data-section');
+                        if (!section) return;
+
+                        // Get current survey id if available
+                        let id = currentSurveyId;
+                        if (!id) {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            id = urlParams.get('id');
+                        }
+
+                        // Build new URL with section and id (if present)
+                        let url = window.location.pathname.split('?')[0] + `?section=${section}`;
+                        if (id) url += `&id=${encodeURIComponent(id)}`;
+                        window.history.replaceState({}, '', url);
+
+                        showView(section);
+
+                        // Optionally load data for each section
+                        if (section === 'my-surveys' && checkLogin()) {
+                            loadUserSurveys();
+                        } else if (section === 'responses' && checkLogin()) {
+                            if (id) viewResponses(id);
+                        } else if (section === 'builder') {
+                            if (id) loadSurveyById(id);
+                        }
+                    });
                 });
 
                 // Survey actions
