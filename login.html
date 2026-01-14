@@ -187,10 +187,10 @@
         <div class="login-container">
             <div class="logo">🏛️</div>
             <h1>Sadeed Portal</h1>
-            <p class="subtitle">Sign in to access your compliance dashboard</p>
+            <p class="subtitle">Sign in to access Sadeed survey engine</p>
 
             <div id="successAlert" class="alert alert-success">
-                ✅ Login successful! Redirecting to dashboard...
+                ✅ Login successful! Redirecting to surveys...
             </div>
 
             <div id="errorAlert" class="alert alert-error">
@@ -222,11 +222,11 @@
                 Sign in with Google
             </button> -->
 
-            <div class="demo-credentials">
+            <!-- <div class="demo-credentials">
                 <h3>Demo Credentials</h3>
                 <p><strong>Email:</strong> demo@uaecompliance.ae</p>
                 <p><strong>Password:</strong> demo123</p>
-            </div>
+            </div> -->
 
             <div class="footer">
                 Don't have an account? <a href="#" style="color: #00732f; text-decoration: none;">Contact Administrator</a>
@@ -242,7 +242,7 @@
             const password = document.getElementById('password').value;
             
             // Demo validation - in real app, this would be server-side
-            if (email === 'demo@uaecompliance.ae' && password === 'demo123') {
+            if (email === 'admin@sadeed.cloud' && password === '12345aA*') {
                 document.getElementById('successAlert').style.display = 'block';
                 document.getElementById('errorAlert').style.display = 'none';
                 
