@@ -1495,23 +1495,34 @@ Thank you for your participation!
 
             // Show dashboard modal and handle logic
             window.showDashboard = async function (surveyId) {
-                const resp = await fetch(`/demo2/api/surveys/${surveyId}/ai-analysis`);
-                const data = await resp.json();
+                try {
+                    const resp = await fetch(`/demo2/api/surveys/${surveyId}/ai-analysis`);
+                    const data = await resp.json();
 
-                // If insights or summary exist, go to dashboard
-                if (
-                    (data.insights && data.insights.length > 0) ||
-                    (data.summary && data.summary.key_takeaway)
-                ) {
-                    window.location.href = `/demo2/ai-dashboard/${surveyId}`;
-                } else {
-                    // Show new AI modal
+                    // Check for AI analysis data in DB
+                    const hasInsights = Array.isArray(data.insights) && data.insights.length > 0;
+                    const hasSummary = data.summary && data.summary.key_takeaway;
+                    const hasRootCauses = Array.isArray(data.root_causes) && data.root_causes.length > 0;
+                    const hasActionPlans = Array.isArray(data.action_plans) && data.action_plans.length > 0;
+
+                    if (hasInsights || hasSummary || hasRootCauses || hasActionPlans) {
+                        // Redirect to dashboard if any analysis data exists
+                        window.location.href = `/demo2/ai-dashboard/${surveyId}`;
+                    } else {
+                        // Show AI thinking modal and trigger analysis
+                        showAiThinkingModal(surveyId);
+                        await triggerAIAnalysis(surveyId);
+                        pollForDashboardReadyAiModal(surveyId);
+                    }
+                } catch (err) {
+                    // On error, show modal and try to trigger analysis
                     showAiThinkingModal(surveyId);
                     await triggerAIAnalysis(surveyId);
                     pollForDashboardReadyAiModal(surveyId);
                 }
             };
 
+            // Show AI thinking modal and start polling for dashboard readiness
             function showAiThinkingModal(surveyId) {
                 // Reset modal state
                 document.getElementById('aiResult').textContent = '';
