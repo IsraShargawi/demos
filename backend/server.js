@@ -85,10 +85,6 @@ function requireAuth(req, res, next) {
     next();
 }
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../login.html'));
-});
-
 // Email transporter
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -1893,7 +1889,7 @@ app.get('/login', (req, res) => {
 });
 
 // ================== Demo2 prefix) ==================
-app.get('/demo2', (req, res) => {
+app.get('/demo2/main', (req, res) => {
     res.sendFile(path.join(__dirname, '../demo2/index.html'));
 });
 

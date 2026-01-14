@@ -835,7 +835,7 @@ Thank you for your participation!
             // Initialize when DOM is loaded
             document.addEventListener('DOMContentLoaded', function () {
                 // Set user info if logged in
-                // Use localStorage from login.html
+                // Use localStorage from login
                 if (localStorage.getItem('userLoggedIn') === 'true') {
                     currentUser.email = localStorage.getItem('survey_user_email') || localStorage.getItem('userEmail') || '';
                     currentUser.name = localStorage.getItem('survey_user_name') || localStorage.getItem('userName') || '';
@@ -1599,7 +1599,7 @@ Thank you for your participation!
                 localStorage.removeItem('userLoggedIn');
                 localStorage.removeItem('survey_user_email');
                 localStorage.removeItem('survey_user_name');
-                window.location.href = '/login.html';
+                window.location.href = '/login';
             }
         </script>
 </body>

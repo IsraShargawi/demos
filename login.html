@@ -251,7 +251,7 @@
                 localStorage.setItem('survey_user_email', email);
 
                 setTimeout(() => {
-                    window.location.href = '/demo2/index.html';
+                    window.location.href = '/demo2/main';
                 }, 1500);
             } else {
                 document.getElementById('errorAlert').style.display = 'block';
@@ -271,7 +271,7 @@
 
         // Check if already logged in
         if (localStorage.getItem('userLoggedIn') === 'true') {
-            window.location.href = '/demo2/index.html';
+            window.location.href = '/demo2/main';
         }
     </script>
 </body>
