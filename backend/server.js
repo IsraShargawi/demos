@@ -1888,6 +1888,10 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../login.html'));
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../index.html'));
+});
+
 app.get('/main', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
