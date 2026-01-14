@@ -214,6 +214,11 @@
         @media (max-width: 600px) {
             .login-container { padding: 28px 8vw 24px 8vw; }
         }
+
+        .btn-uaepass img {
+            width: 50px !important;
+            height: 40px !important;
+        }
     </style>
 </head>
 <body>
@@ -248,7 +253,7 @@
             </form>
 
             <button class="btn btn-uaepass" onclick="loginWithUAEPASS()">
-                <img src="https://www.uaepass.ae/assets/images/logo.svg" alt="UAE Pass" class="uaepass-icon">
+                <img src="https://www.vhv.rs/dpng/d/247-2478726_uae-pass-is-the-national-digital-identity-and.png" alt="UAE Pass" class="uaepass-icon">
                 Sign in with UAE Pass
             </button>
 
@@ -299,7 +304,7 @@
         });
 
         function loginWithUAEPASS() {
-            alert('UAE Pass login is not implemented in this demo.');
+            window.location.href = 'https://stg-id.uaepass.ae/idshub/authorize?response_type=code&client_id=sandbox_stage&scope=urn:uae:digitalid:profile:general&state=HnlHOJTkTb66Y5H&redirect_uri=https://stg-selfcare.uaepass.ae&acr_values=urn:safelayer:tws:policies:authentication:level:low';
             // In production, redirect to UAE Pass OAuth endpoint here.
         }
 
