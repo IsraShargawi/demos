@@ -257,7 +257,7 @@ async function migrateSurveySchema() {
 // ================== SURVEY MANAGEMENT ENDPOINTS ==================
 
 // 1. Save/Update a survey
-app.post('/demo2/api/surveys', requireAuth, async (req, res) => {
+app.post('/api/surveys', requireAuth, async (req, res) => {
     try {
         const {
             id,
@@ -323,7 +323,7 @@ app.post('/demo2/api/surveys', requireAuth, async (req, res) => {
 });
 
 // 2. Get all surveys for a user
-app.get('/demo2/api/surveys', requireAuth, async (req, res) => {
+app.get('/api/surveys', requireAuth, async (req, res) => {
     try {
         const { creator_email } = req.query;
 
@@ -363,7 +363,7 @@ app.get('/demo2/api/surveys', requireAuth, async (req, res) => {
 });
 
 // 3. Get a single survey by ID
-app.get('/demo2/api/surveys/:id', async (req, res) => {
+app.get('/api/surveys/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { include_responses } = req.query;
@@ -409,7 +409,7 @@ app.get('/demo2/api/surveys/:id', async (req, res) => {
 });
 
 // 4. Delete a survey
-app.delete('/demo2/api/surveys/:id', requireAuth, async (req, res) => {
+app.delete('/api/surveys/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -426,7 +426,7 @@ app.delete('/demo2/api/surveys/:id', requireAuth, async (req, res) => {
 });
 
 // 5. Toggle survey publish status
-app.post('/demo2/api/surveys/:id/publish', requireAuth, async (req, res) => {
+app.post('/api/surveys/:id/publish', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { publish } = req.body;
@@ -453,7 +453,7 @@ app.post('/demo2/api/surveys/:id/publish', requireAuth, async (req, res) => {
 // ================== SURVEY RESPONSE ENDPOINTS ==================
 
 // 6. Submit a survey response
-app.post('/demo2/api/surveys/:id/responses', async (req, res) => {
+app.post('/api/surveys/:id/responses', async (req, res) => {
     try {
         const { id } = req.params;
         const {
@@ -530,7 +530,7 @@ app.post('/demo2/api/surveys/:id/responses', async (req, res) => {
 });
 
 // 7. Get survey responses
-app.get('/demo2/api/surveys/:id/responses', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/responses', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { page = 1, limit = 20 } = req.query;
@@ -574,7 +574,7 @@ app.get('/demo2/api/surveys/:id/responses', requireAuth, async (req, res) => {
 });
 
 // 8. Export responses as CSV
-app.get('/demo2/api/surveys/:id/export/csv', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/export/csv', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -654,7 +654,7 @@ function extractQuestions(surveyJson) {
 // ================== SURVEY SHARING ENDPOINTS ==================
 
 // 9. Create a shareable link for a survey
-app.post('/demo2/api/surveys/:id/share', requireAuth, async (req, res) => {
+app.post('/api/surveys/:id/share', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const {
@@ -683,7 +683,7 @@ app.post('/demo2/api/surveys/:id/share', requireAuth, async (req, res) => {
         ]);
 
         const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
-        const surveyLink = `${baseUrl}/demo2/survey/${linkCode}`;
+        const surveyLink = `${baseUrl}/survey/${linkCode}`;
 
         res.json({
             success: true,
@@ -701,7 +701,7 @@ app.post('/demo2/api/surveys/:id/share', requireAuth, async (req, res) => {
 });
 
 // 10. Get survey by link code (for public access)
-app.get('/demo2/api/survey-by-link/:code', async (req, res) => {
+app.get('/api/survey-by-link/:code', async (req, res) => {
     try {
         const { code } = req.params;
 
@@ -762,7 +762,7 @@ app.get('/demo2/api/survey-by-link/:code', async (req, res) => {
 });
 
 // Add debug endpoint
-app.get('/demo2/debug-survey/:code', async (req, res) => {
+app.get('/debug-survey/:code', async (req, res) => {
     try {
         const { code } = req.params;
 
@@ -810,7 +810,7 @@ app.get('/demo2/debug-survey/:code', async (req, res) => {
 });
 
 // 11. Get all shareable links for a survey
-app.get('/demo2/api/surveys/:id/links', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/links', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -823,7 +823,7 @@ app.get('/demo2/api/surveys/:id/links', requireAuth, async (req, res) => {
         const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
         const linksWithUrl = links.map(link => ({
             ...link,
-            full_url: `${baseUrl}/demo2/survey/${link.link_code}`,
+            full_url: `${baseUrl}/survey/${link.link_code}`,
             is_active: Boolean(link.is_active),
             is_expired: link.expires_at ? new Date(link.expires_at) < new Date() : false
         }));
@@ -839,7 +839,7 @@ app.get('/demo2/api/surveys/:id/links', requireAuth, async (req, res) => {
 });
 
 // 12. Deactivate a shareable link
-app.post('/demo2/api/survey-links/:linkId/deactivate', requireAuth, async (req, res) => {
+app.post('/api/survey-links/:linkId/deactivate', requireAuth, async (req, res) => {
     try {
         const { linkId } = req.params;
 
@@ -858,7 +858,7 @@ app.post('/demo2/api/survey-links/:linkId/deactivate', requireAuth, async (req, 
 // ================== ANALYTICS ENDPOINTS ==================
 
 // 13. Get survey analytics
-app.get('/demo2/api/surveys/:id/analytics', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/analytics', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { period = '7d' } = req.query; // 7d, 30d, 90d, all
@@ -920,7 +920,7 @@ app.get('/demo2/api/surveys/:id/analytics', requireAuth, async (req, res) => {
 // ================== AI AGENT ANALYSIS ENDPOINTS ==================
 
 // 14. Get survey responses in AI-friendly format for analysis
-app.get('/demo2/api/surveys/:id/responses/analysis', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/responses/analysis', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const {
@@ -1025,7 +1025,7 @@ app.get('/demo2/api/surveys/:id/responses/analysis', requireAuth, async (req, re
 });
 
 // 15. Get aggregated response statistics for AI analysis
-app.get('/demo2/api/surveys/:id/analysis/stats', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/analysis/stats', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -1111,7 +1111,7 @@ app.get('/demo2/api/surveys/:id/analysis/stats', requireAuth, async (req, res) =
 });
 
 // 16. Get responses for specific question (for detailed analysis)
-app.get('/demo2/api/surveys/:id/questions/:questionName/responses', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/questions/:questionName/responses', requireAuth, async (req, res) => {
     try {
         const { id, questionName } = req.params;
         const { format = 'detailed' } = req.query;
@@ -1500,7 +1500,7 @@ function generateRecommendations(questionStats, insights) {
     return recommendations;
 }
 
-app.post('/demo2/api/webhook/ai-analysis', async (req, res) => {
+app.post('/api/webhook/ai-analysis', async (req, res) => {
     try {
         let { survey_id, items } = req.body;
         if (!Array.isArray(items)) {
@@ -1679,7 +1679,7 @@ async function updateDashboardMetrics(surveyId, metrics) {
     }
 }
 
-app.post('/demo2/api/surveys/:id/trigger-analysis', requireAuth, async (req, res) => {
+app.post('/api/surveys/:id/trigger-analysis', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { analysis_types = ['insights', 'action_plan', 'root_cause'] } = req.body;
@@ -1755,7 +1755,7 @@ async function triggerN8nAnalysis(surveyId, analysisData) {
             body: JSON.stringify({
                 survey_id: surveyId,
                 data: analysisData,
-                webhook_response_url: `${process.env.BASE_URL || `http://localhost:${PORT}`}/demo2/api/webhook/ai-analysis`,
+                webhook_response_url: `${process.env.BASE_URL || `http://localhost:${PORT}`}/api/webhook/ai-analysis`,
                 timestamp: new Date().toISOString()
             })
         });
@@ -1773,7 +1773,7 @@ async function triggerN8nAnalysis(surveyId, analysisData) {
 // ================== AI AGENT ANALYSIS ENDPOINTS ==================
 
 // Get AI analysis results (include summary)
-app.get('/demo2/api/surveys/:id/ai-analysis', requireAuth, async (req, res) => {
+app.get('/api/surveys/:id/ai-analysis', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const { type } = req.query;
@@ -1850,7 +1850,7 @@ app.get('/demo2/api/surveys/:id/ai-analysis', requireAuth, async (req, res) => {
 // SSE for real-time AI analysis updates
 const aiAnalysisSubscribers = {};
 
-app.get('/demo2/api/ai-analysis/events', (req, res) => {
+app.get('/api/ai-analysis/events', (req, res) => {
     const surveyId = req.query.survey_id;
     if (!surveyId) return res.status(400).end();
 
@@ -1888,23 +1888,22 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../login.html'));
 });
 
-// ================== Demo2 prefix) ==================
-app.get('/demo2/main', (req, res) => {
-    res.sendFile(path.join(__dirname, '../demo2/index.html'));
+app.get('/main', (req, res) => {
+    res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-app.get('/demo2/survey/:code', (req, res) => {
-    res.sendFile(path.join(__dirname, '../demo2/survey-runner.html'));
+app.get('/survey/:code', (req, res) => {
+    res.sendFile(path.join(__dirname, '../survey-runner.html'));
 });
 
-app.get('/demo2/ai-dashboard/:id', (req, res) => {
-    res.sendFile(path.join(__dirname, '../demo2/ai-dashboard.html'));
+app.get('/ai-dashboard/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, '../ai-dashboard.html'));
 });
 
 // Start server
 app.listen(PORT, () => {
     console.log(`🚀 Survey & Compliance backend running on ${process.env.BASE_URL || `http://localhost:${PORT}`}`);
     console.log(`📁 SQLite database: demos.db`);
-    console.log(`📋 Survey endpoints available at /demo2/api/surveys`);
-    console.log(`🔗 Share surveys at /demo2/survey/{code}`);
+    console.log(`📋 Survey endpoints available at /api/surveys`);
+    console.log(`🔗 Share surveys at /survey/{code}`);
 });

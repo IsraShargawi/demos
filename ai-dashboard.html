@@ -531,8 +531,8 @@
             <i class="fas fa-leaf"></i> Sadeed
         </div>
         <nav class="nav flex-column w-100">
-            <a class="nav-link" href="/demo2/main"><i class="fas fa-pen-nib"></i> Survey Builder</a>
-            <!-- <a class="nav-link active" href="/demo2/ai-dashboard.html"><i class="fas fa-chart-bar"></i> Analytics</a> -->
+            <a class="nav-link" href="/main"><i class="fas fa-pen-nib"></i> Survey Builder</a>
+            <!-- <a class="nav-link active" href="/ai-dashboard.html"><i class="fas fa-chart-bar"></i> Analytics</a> -->
         </nav>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
@@ -724,7 +724,7 @@
                     throw new Error('Survey ID not found in URL');
                 }
 
-                const response = await fetch(`/demo2/api/surveys/${surveyId}/ai-analysis`);
+                const response = await fetch(`/api/surveys/${surveyId}/ai-analysis`);
                 const apiData = await response.json();
 
                 // Transform API data to expected dashboard structure
@@ -1202,7 +1202,7 @@
         async function updateActionItemStatus(itemIndex, status) {
             // Call your API to update the action item status
             try {
-                const response = await fetch('/demo2/api/action-items/update', {
+                const response = await fetch('/api/action-items/update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ itemIndex, status })
