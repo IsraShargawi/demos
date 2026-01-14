@@ -19,12 +19,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(120deg, #eaf5ee 0%, #f5f7fa 100%);
+            background: #fff; /* changed from gradient to white */
             min-height: 100vh;
             margin: 0;
             padding: 0;
             display: flex;
-            /* Add a subtle pattern overlay */
             position: relative;
         }
         body::before {
@@ -43,7 +42,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(120deg, #f5f7fa 0%, #eaf5ee 100%);
+            background: #fff; /* changed from gradient to white */
             position: relative;
             z-index: 1;
         }
@@ -80,6 +79,63 @@
         .login-container:hover .logo {
             transform: scale(1.08) rotate(-2deg);
         }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary {
+            background: linear-gradient(120deg, #3c7042 0%, #4361ee 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(67,97,238,0.07);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(120deg, #4361ee 0%, #3c7042 100%);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(60,112,66,0.15);
+        }
+        .btn-uaepass {
+            width: 100%;
+            padding: 15px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+            background: #fff !important;
+            color: #222 !important;
+            box-shadow: 0 2px 8px rgba(67,97,238,0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: box-shadow 0.2s, border 0.2s, background 0.2s;
+        }
+        .btn-uaepass:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 16px rgba(67,97,238,0.09);
+            background: #f8fafc !important;
+            color: var(--primary-color) !important;
+        }
+        .uaepass-icon {
+            height: 28px;
+            width: 28px;
+            vertical-align: middle;
+            margin-right: 10px;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(67,97,238,0.08);
+            padding: 2px;
+        }
         h1 {
             color: var(--primary-color);
             margin-bottom: 12px;
@@ -115,28 +171,6 @@
             border-color: var(--primary-color);
             background: #fff;
             box-shadow: 0 0 0 3px #b7e4c733;
-        }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.08rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 18px;
-            letter-spacing: 0.5px;
-        }
-        .btn-primary {
-            background: linear-gradient(120deg, #3c7042 0%, #4361ee 100%);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(67,97,238,0.07);
-        }
-        .btn-primary:hover {
-            background: linear-gradient(120deg, #4361ee 0%, #3c7042 100%);
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 24px rgba(60,112,66,0.15);
         }
         .demo-credentials {
             background: #f7fafc;
@@ -213,6 +247,11 @@
                 </button>
             </form>
 
+            <button class="btn btn-uaepass" onclick="loginWithUAEPASS()">
+                <img src="https://www.uaepass.ae/assets/images/logo.svg" alt="UAE Pass" class="uaepass-icon">
+                Sign in with UAE Pass
+            </button>
+
             <!-- <div class="divider">
                 <span>Or continue with</span>
             </div>
@@ -258,6 +297,11 @@
                 document.getElementById('successAlert').style.display = 'none';
             }
         });
+
+        function loginWithUAEPASS() {
+            alert('UAE Pass login is not implemented in this demo.');
+            // In production, redirect to UAE Pass OAuth endpoint here.
+        }
 
         // function signInWithGoogle() {
         //     document.getElementById('successAlert').style.display = 'block';
