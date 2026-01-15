@@ -720,8 +720,6 @@
                 const pathname = url.pathname;
                 const pathParts = pathname.split('/');
                 const surveyId = pathParts[2];
-                console.log('Survey ID:', surveyId);
-                console.log('Fetching data for survey ID:', pathParts);
                 if (!surveyId) {
                     throw new Error('Survey ID not found in URL');
                 }
