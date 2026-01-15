@@ -973,9 +973,9 @@ Thank you for your participation!
                 if (!currentUser.email) {
                     window.location.href = '/login';
                     //showToast('Error', 'Please login first at the login page');
-                    //return false;
+                    return false;
                 }
-                //return true;
+                return true;
             }
 
             function updateStats() {
