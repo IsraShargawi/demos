@@ -35,8 +35,8 @@
         }
 
         .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
+            /* max-width: 1400px; */
+            margin: 80px;
         }
 
         .dashboard-header {
@@ -719,7 +719,9 @@
                 const url = new URL(window.location.href);
                 const pathname = url.pathname;
                 const pathParts = pathname.split('/');
-                const surveyId = pathParts[3];
+                const surveyId = pathParts[2];
+                console.log('Survey ID:', surveyId);
+                console.log('Fetching data for survey ID:', pathParts);
                 if (!surveyId) {
                     throw new Error('Survey ID not found in URL');
                 }
